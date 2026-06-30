@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+
+# Secrets & Keys — KHÔNG được commit
+.vault_key
+*.key
+*.pem
+*.p12
+secrets.json
+.env.*
+
+# Raw patient data (có PII thật)
+data/raw/
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Great Expectations
+gx/
+great_expectations/uncommitted/
+.great_expectations/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Docker volumes
+mlruns/
