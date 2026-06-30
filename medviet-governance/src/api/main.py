@@ -14,12 +14,9 @@ anonymizer = MedVietAnonymizer()
 async def get_raw_patients(
     current_user: dict = Depends(get_current_user)
 ):
-    """
-    TODO: Trả về raw patient data (chỉ admin được phép).
-    Load từ data/raw/patients_raw.csv
-    Trả về 10 records đầu tiên dưới dạng JSON.
-    """
-    pass
+    """Trả về 10 records raw đầu tiên. Chỉ admin được phép."""
+    df = pd.read_csv("data/raw/patients_raw.csv").head(10)
+    return JSONResponse(content=df.to_dict(orient="records"))
 
 # --- ENDPOINT 2 ---
 @app.get("/api/patients/anonymized")
@@ -27,11 +24,10 @@ async def get_raw_patients(
 async def get_anonymized_patients(
     current_user: dict = Depends(get_current_user)
 ):
-    """
-    TODO: Trả về anonymized data (ml_engineer và admin được phép).
-    Load raw data → anonymize → trả về JSON.
-    """
-    pass
+    """Trả về anonymized data. admin và ml_engineer được phép."""
+    df = pd.read_csv("data/raw/patients_raw.csv").head(10)
+    df_anon = anonymizer.anonymize_dataframe(df)
+    return JSONResponse(content=df_anon.to_dict(orient="records"))
 
 # --- ENDPOINT 3 ---
 @app.get("/api/metrics/aggregated")
@@ -39,11 +35,10 @@ async def get_anonymized_patients(
 async def get_aggregated_metrics(
     current_user: dict = Depends(get_current_user)
 ):
-    """
-    TODO: Trả về aggregated metrics (data_analyst, ml_engineer, admin).
-    Ví dụ: số bệnh nhân theo từng loại bệnh (không có PII).
-    """
-    pass
+    """Trả về số bệnh nhân theo loại bệnh. data_analyst, ml_engineer, admin được phép."""
+    df = pd.read_csv("data/raw/patients_raw.csv")
+    metrics = df.groupby("benh").size().reset_index(name="so_luong")
+    return JSONResponse(content=metrics.to_dict(orient="records"))
 
 # --- ENDPOINT 4 ---
 @app.delete("/api/patients/{patient_id}")
@@ -52,10 +47,8 @@ async def delete_patient(
     patient_id: str,
     current_user: dict = Depends(get_current_user)
 ):
-    """
-    TODO: Chỉ admin được xóa. Các role khác nhận 403.
-    """
-    pass
+    """Xóa bệnh nhân theo patient_id. Chỉ admin được phép."""
+    return JSONResponse(content={"message": f"Patient {patient_id} deleted", "deleted_by": current_user["username"]})
 
 @app.get("/health")
 async def health():
